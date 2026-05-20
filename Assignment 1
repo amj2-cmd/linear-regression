@@ -1,1 +1,18 @@
+import pandas as pd
+import matplotlib.pyplot as mp
+from sklearn.linear_model import LinearRegression
 
+data=pd.read_csv("C:\\Users\\ASUS\\Documents\\load extension data.csv")
+
+x=data[["load"]]
+y=data[["extension"]]
+
+mp.plot(x,y,marker="o",color="green")
+
+mp.show()
+model=LinearRegression()
+model.fit(x,y)
+
+inp_user=int(input("Enter a load"))
+new_ext=model.predict([[inp_user]])
+print(new_ext)
