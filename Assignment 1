@@ -15,4 +15,4 @@ model.fit(x,y)
 
 inp_user=int(input("Enter a load"))
 new_ext=model.predict([[inp_user]])
-print(new_ext)
+print("Extension:",new_ext)
