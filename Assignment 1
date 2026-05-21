@@ -8,6 +8,8 @@ x=data[["load"]]
 y=data[["extension"]]
 
 mp.plot(x,y,marker="o",color="green")
+mp.xlabel("Load")
+mp.ylabel("Extension")
 
 mp.show()
 model=LinearRegression()
