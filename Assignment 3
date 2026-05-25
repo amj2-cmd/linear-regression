@@ -1,0 +1,15 @@
+import pandas as pd
+from sklearn.neighbors import KNeighborsRegressor
+
+data=pd.read_csv("C:\\Users\\ASUS\\Documents\\KNN data.csv")
+
+x = data[["Temperature"]]
+y = data[["Fuel Consumption"]]
+
+model = KNeighborsRegressor(n_neighbors=3)
+
+model.fit(x, y)
+
+prediction = model.predict([[58]])
+
+print("Predicted Fuel Consumption: ",prediction,"L/hr")
