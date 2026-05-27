@@ -1,1 +1,25 @@
+import pandas as pd
+import joblib
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import LabelEncoder
+from google.colab import files
+uploaded = files.upload()
 
+data =  pd.read_csv("data.csv")
+label_encoder = LabelEncoder()
+data["diagnosis_encoded"] = label_encoder.fit_transform(data["diagnosis"])
+
+x = data.drop('diagnosis', axis=1)
+y = data[['diagnosis']]
+
+model = LogisticRegression()
+model.fit(x,y)
+
+print("Coeff = ",model.coef_)
+print("Intercept = ",model.intercept_)
+
+joblib.dump(model,"big_data.pkl")
+print("Training completed")
+
+sample_ = ''
+newdiag_enc = label_encoder.transform([sample_])[0]
