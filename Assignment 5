@@ -6,13 +6,17 @@ from google.colab import files
 uploaded = files.upload()
 
 data =  pd.read_csv("data.csv")
+#to remove NaN columns
+if 'Unnamed: 32' in data.columns:
+    data = data.drop('Unnamed: 32', axis=1)
+
 label_encoder = LabelEncoder()
 data["diagnosis_encoded"] = label_encoder.fit_transform(data["diagnosis"])
 
-x = data.drop('diagnosis', axis=1)
-y = data[['diagnosis']]
+x = data.drop(['diagnosis','diagnosis_encoded'] axis=1)
+y = data['diagnosis_encoded']
 
-model = LogisticRegression()
+model = LogisticRegression(max_iter=5000)
 model.fit(x,y)
 
 print("Coeff = ",model.coef_)
@@ -21,5 +25,13 @@ print("Intercept = ",model.intercept_)
 joblib.dump(model,"big_data.pkl")
 print("Training completed")
 
-sample_ = ''
-newdiag_enc = label_encoder.transform([sample_])[0]
+sample_data = [842517,20.57,17.77,132.9,1326,0.08474,0.07864,0.0869,0.07017,0.1812,0.05667,0.5435,0.7339,3.398,74.08,0.005225,0.01308,0.0186,0.0134,0.01389,0.003532,24.99,23.41,158.8,1956,0.1238,0.1866,0.2416,0.1865,0.275,0.08902]
+
+prediction = model.predict([sample_data])
+dec_prediction = label_encoder.inverse_transform(prediction)
+print('Predicted Diagnosis: ')
+if dec_prediction[0] == 1:
+    print("Malignant")
+else:
+    print("Benign")
+
