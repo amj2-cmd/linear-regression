@@ -1,0 +1,39 @@
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+from sklearn.tree import DecisionTreeClassifier
+from sklearn import tree
+from google.colab import files
+uploaded = files.upload()
+
+data =  pd.read_csv("Decision_Tree.csv")
+temp_label_encoder = LabelEncoder()
+vib_label_encoder = LabelEncoder()
+fail_label_encoder = LabelEncoder()
+
+data["Temperature"] = temp_label_encoder.fit_transform(data["Temperature"])
+data["Vibration"] = vib_label_encoder.fit_transform(data["Vibration"])
+data["Failure"] = fail_label_encoder.fit_transform(data["Failure"])
+
+x = data[['Temperature','Vibration']]
+y = data['Failure']
+
+model = DecisionTreeClassifier(criterion='entropy')
+model.fit(x,y)
+
+print("New Machine Data:")
+temp_value = 'High'
+vib_value = 'Medium'
+
+new_machine = [[temp_label_encoder.transform([temp_value])[0],vib_label_encoder.transform([vib_value])[0]]]
+prediction = model.predict(new_machine)
+
+print("Temperature value: ",temp_value)
+print("Vibration value: ",vib_value)
+print("Predicted result: ")
+if prediction[0] == 1:
+  print("The machine WILL HAVE failure")
+else:
+  print("The machine WILL NOT HAVE failure")
+
+
+ 
