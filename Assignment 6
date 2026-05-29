@@ -36,4 +36,12 @@ else:
   print("The machine WILL NOT HAVE failure")
 
 
+import matplotlib.pyplot as plt
+from sklearn import tree
+plt.figure(figsize=(8,6))
+tree.plot_tree(model,feature_names=['Temperature','Vibration'],class_names=['No','Yes'])
+plt.title("Decision Tree")
+plt.show()
+
+
  
