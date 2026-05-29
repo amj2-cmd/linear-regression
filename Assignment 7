@@ -1,8 +1,33 @@
 import pandas as pd
-from sklearn.preprocessing import LabelEncoder
+import matplotlib.pyplot as plt
 from sklearn.tree import DecisionTreeClassifier
 from sklearn import tree
 from google.colab import files
 uploaded = files.upload()
 
+data =  pd.read_csv("decision_tree2.csv")
+
+#to remove NaN columns
+if 'Unnamed: 32' in data.columns:
+    data = data.drop('Unnamed: 32', axis=1)
+
+y = data['fail']
+x = data.drop(['footfall','fail'],axis=1)
+
+model = DecisionTreeClassifier(criterion='entropy')
+model.fit(x,y)
+
+new_machine = [[4,5,3,6,1,45,5,1]]
+prediction = model.predict(new_machine)
+
+print("The predicted result for the given data set: ")
+if prediction[0] == 1:
+  print("The machine WILL HAVE failure")
+else:
+  print("The machine WILL NOT HAVE failure")
+
+plt.figure(figsize=(8,6))
+tree.plot_tree(model,feature_names=x.columns,class_names=['No', 'Yes'],filled=True)
+plt.title("Decision Tree")
+plt.show()
 
