@@ -1,0 +1,74 @@
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+import joblib
+
+data = pd.read_csv("C:\\Users\\ASUS\\Desktop\\My Stuff\\S2 INTERNSHIP RIT\\insurance_data.csv")
+
+x = data.drop(['age','bmi','children','charges'],axis=1)
+y = data[['charges']]
+
+enc_sex = LabelEncoder()
+enc_smoker = LabelEncoder()
+enc_region = LabelEncoder()
+
+x['sex'] = enc_sex.fit_transform(x['sex'])
+x['smoker'] = enc_smoker.fit_transform(x['smoker'])
+x['region'] = enc_region.fit_transform(x['region'])
+
+x_scaler = StandardScaler()
+y_scaler = StandardScaler()
+
+x_scaled = x_scaler.fit_transform(x)
+y_scaled = y_scaler.fit_transform(y)
+
+x_train, x_test, y_train, y_test = train_test_split(x_scaled,y_scaled, test_size=0.2, random_state=42)
+
+model = LinearRegression()
+model.fit(x_train,y_train)
+
+y_pred = model.predict(x_test)
+error = mean_squared_error(y_test,y_pred)
+rms = np.sqrt(error)
+print("The error is: ",rms)
+print()
+joblib.dump(model,"insurance_model.pkl")
+joblib.dump(x_scaler,"x_scaler.pkl")
+joblib.dump(y_scaler,"y_scaler.pkl")
+
+
+model = joblib.load("insurance_model.pkl")
+x_scaler = joblib.load("x_scaler.pkl")
+y_scaler = joblib.load("y_scaler.pkl")
+
+joblib.dump(enc_sex, "enc_sex.pkl")
+joblib.dump(enc_smoker, "enc_smoker.pkl")
+joblib.dump(enc_region, "enc_region.pkl")
+
+enc_sex = joblib.load("enc_sex.pkl")
+enc_smoker = joblib.load("enc_smoker.pkl")
+enc_region = joblib.load("enc_region.pkl")
+
+print("Model and scalers saved successfully")
+
+new_df = pd.DataFrame(
+    [[29,'female',28.6,1,'no','southwest',12745.67]],
+    columns=['age','sex','bmi','children','smoker','region','charges'])
+
+new_data = new_df[['sex','smoker','region']].copy()
+
+new_data['sex'] = enc_sex.transform(new_data['sex'])
+new_data['smoker'] = enc_smoker.transform(new_data['smoker'])
+new_data['region'] = enc_region.transform(new_data['region'])
+
+new_data_scaled = x_scaler.transform(new_data)
+
+pred_charge_scaled = model.predict(new_data_scaled)
+
+pred_charge = y_scaler.inverse_transform(pred_charge_scaled)
+
+print("Predicted charge:", pred_charge[0][0])
